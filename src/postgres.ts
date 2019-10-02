@@ -30,9 +30,14 @@ export class Postgres {
   }
 
   private async query(query: QueryConfig): Promise<QueryResult> {
+    const hrstart = process.hrtime();
     try {
       const data = await this.client.query(query);
-      console.info(`query OK. text=${query.text} values=${query.values}`);
+      const hrend = process.hrtime(hrstart);
+      console.info(
+        `query OK. text=${query.text} values=${query.values}. took=${hrend[1] /
+          1000000}[ms]`,
+      );
       return data;
     } catch (err) {
       const msg = `query error. query text=${query.text} values=${query.values}. error=${err.message}`;
