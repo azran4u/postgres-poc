@@ -42,6 +42,7 @@ export class Postgres {
     } catch (err) {
       const msg = `query error. query text=${query.text} values=${query.values}. error=${err.message}`;
       console.error(msg);
+      throw new Error(msg);
     }
   }
 
@@ -55,9 +56,9 @@ export class Postgres {
   public async saveJson(id: number, obj: object) {
     await this.query({
       text: `insert into public.json(ID, data) VALUES($1, $2)
-      on conflict ON CONSTRAINT jsonPrimaryKey
-      DO UPDATE
-      SET data = EXCLUDED.data;`,
+            on conflict ON CONSTRAINT jsonPrimaryKey
+            DO UPDATE
+            SET data = EXCLUDED.data;`,
       values: [id, obj],
     });
   }
